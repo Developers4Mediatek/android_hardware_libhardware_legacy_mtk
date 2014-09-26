@@ -255,6 +255,38 @@ public:
     virtual status_t    setParameters(const String8& keyValuePairs) = 0;
     virtual String8     getParameters(const String8& keys) = 0;
 
+   // add by chipeng to add EM parameter
+    virtual status_t SetEMParameter(void *ptr , int len) =0;
+    virtual status_t GetEMParameter(void *ptr , int len) =0;
+    virtual status_t SetAudioCommand(int par1, int par2) =0;
+    virtual status_t GetAudioCommand(int par1)=0;
+    virtual status_t SetAudioData(int par1,size_t len,void *ptr)=0;
+    virtual status_t GetAudioData(int par1,size_t len,void *ptr)=0;
+
+    // add by Tina to set ACF Preview parameter
+    virtual status_t SetACFPreviewParameter(void *ptr , int len) =0;
+    virtual status_t SetHCFPreviewParameter(void *ptr , int len) =0;
+
+    /////////////////////////////////////////////////////////////////////////
+    //    for PCMxWay Interface API ...   Stan
+    /////////////////////////////////////////////////////////////////////////
+    virtual int xWayPlay_Start(int sample_rate) = 0;
+    virtual int xWayPlay_Stop(void) = 0;
+    virtual int xWayPlay_Write(void *buffer, int size_bytes) = 0;
+    virtual int xWayPlay_GetFreeBufferCount(void) = 0;
+    virtual int xWayRec_Start(int sample_rate) = 0;
+    virtual int xWayRec_Stop(void) = 0;
+    virtual int xWayRec_Read(void *buffer, int size_bytes) = 0;
+    //add by wendy
+    virtual int ReadRefFromRing(void*buf, uint32_t datasz,void* DLtime) =0;
+    virtual int GetVoiceUnlockULTime(void* DLtime) =0;
+    virtual int SetVoiceUnlockSRC(uint outSR, uint outChannel) = 0;
+    virtual bool startVoiceUnlockDL()= 0;
+    virtual bool stopVoiceUnlockDL() = 0;
+    virtual void freeVoiceUnlockDLInstance() = 0;
+    virtual int GetVoiceUnlockDLLatency() = 0;
+    virtual bool getVoiceUnlockDLInstance() = 0;
+
     // Returns audio input buffer size according to parameters passed or 0 if one of the
     // parameters is not supported
     virtual size_t    getInputBufferSize(uint32_t sampleRate, int format, int channelCount) = 0;
@@ -282,6 +314,8 @@ public:
     virtual status_t dumpState(int fd, const Vector<String16>& args) = 0;
 
     static AudioHardwareInterface* create();
+
+    static AudioHardwareInterface* A2DPcreate();
 
 protected:
 

@@ -148,6 +148,10 @@ public:
 
         virtual status_t dump(int fd);
 
+#ifdef MTK_AUDIO
+        virtual status_t SetPolicyManagerParameters(int par1,int par2 ,int par3,int par4);
+#endif
+
         virtual bool isOffloadSupported(const audio_offload_info_t& offloadInfo);
 
 protected:
@@ -159,6 +163,8 @@ protected:
             STRATEGY_SONIFICATION_RESPECTFUL,
             STRATEGY_DTMF,
             STRATEGY_ENFORCED_AUDIBLE,
+            STRATEGY_PROPRIETARY_ANLG,
+            STRATEGY_PROPRIETARY_DGTL,
             NUM_STRATEGIES
         };
 
@@ -258,6 +264,10 @@ protected:
 
             audio_devices_t device() const;
             void changeRefCount(AudioSystem::stream_type stream, int delta);
+
+            uint32_t refCount();
+            uint32_t strategyRefCount(routing_strategy strategy);
+            bool isUsedByStrategy(routing_strategy strategy) { return (strategyRefCount(strategy) != 0);}
 
             bool isDuplicated() const { return (mOutput1 != NULL && mOutput2 != NULL); }
             audio_devices_t supportedDevices();
@@ -452,6 +462,16 @@ protected:
 
         void updateDevicesAndOutputs();
 
+        // true if current platform requires a specific output to be opened for this particular
+        // set of parameters. This function is called by getOutput() and is implemented by platform
+        // specific audio policy manager.
+        virtual bool needsDirectOuput(audio_stream_type_t stream,
+                                      uint32_t samplingRate,
+                                      audio_format_t format,
+                                      audio_channel_mask_t channelMask,
+                                      audio_output_flags_t flags,
+                                      audio_devices_t device);
+
         virtual uint32_t getMaxEffectsCpuLoad();
         virtual uint32_t getMaxEffectsMemory();
 #ifdef AUDIO_POLICY_TEST
@@ -583,6 +603,7 @@ private:
         // updates device caching and output for streams that can influence the
         //    routing of notifications
         void handleNotificationRoutingForStream(AudioSystem::stream_type stream);
+        static bool isVirtualInputDevice(audio_devices_t device);
 };
 
 };

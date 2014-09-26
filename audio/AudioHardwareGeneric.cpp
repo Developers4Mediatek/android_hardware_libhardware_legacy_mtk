@@ -42,6 +42,111 @@ static char const * const kAudioDeviceName = "/dev/eac";
 
 // ----------------------------------------------------------------------------
 
+#ifndef ANDROID_DEFAULT_CODE
+ status_t AudioHardwareGeneric::SetEMParameter(void *ptr , int len)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareGeneric::GetEMParameter(void *ptr , int len)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareGeneric::SetAudioCommand(int par1, int par2)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareGeneric::GetAudioCommand(int par1)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareGeneric::SetAudioData(int par1,size_t len,void *ptr)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareGeneric::GetAudioData(int par1,size_t len,void *ptr)
+ {
+     return NO_ERROR;
+ }
+
+ status_t AudioHardwareGeneric::SetACFPreviewParameter(void *ptr , int len)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareGeneric::SetHCFPreviewParameter(void *ptr , int len)
+ {
+     return NO_ERROR;
+ }
+ /////////////////////////////////////////////////////////////////////////
+ //    for PCMxWay Interface API ...
+ /////////////////////////////////////////////////////////////////////////
+ int AudioHardwareGeneric::xWayPlay_Start(int sample_rate)
+ {
+     return NO_ERROR;
+ }
+ int AudioHardwareGeneric::xWayPlay_Stop(void)
+ {
+     return NO_ERROR;
+ }
+ int AudioHardwareGeneric::xWayPlay_Write(void *buffer, int size_bytes)
+ {
+     return NO_ERROR;
+ }
+ int AudioHardwareGeneric::xWayPlay_GetFreeBufferCount(void)
+ {
+     return NO_ERROR;
+ }
+int AudioHardwareGeneric::xWayRec_Start(int sample_rate)
+ {
+     return NO_ERROR;
+ }
+ int AudioHardwareGeneric::xWayRec_Stop(void)
+ {
+     return NO_ERROR;
+ }
+ int AudioHardwareGeneric::xWayRec_Read(void *buffer, int size_bytes)
+ {
+     return NO_ERROR;
+ }
+
+ //add by wendy
+ int AudioHardwareGeneric::ReadRefFromRing(void*buf, uint32_t datasz,void* DLtime)
+ {
+    return NO_ERROR;
+ }
+  int AudioHardwareGeneric::GetVoiceUnlockULTime(void* DLtime)
+ {
+    return NO_ERROR;
+ }
+ int AudioHardwareGeneric::SetVoiceUnlockSRC(uint outSR, uint outChannel)
+ {
+    return NO_ERROR;
+ }
+
+ bool AudioHardwareGeneric::startVoiceUnlockDL()
+ {
+    return NO_ERROR;
+ }
+
+ bool AudioHardwareGeneric::stopVoiceUnlockDL()
+ {
+    return NO_ERROR;
+ }
+
+ void AudioHardwareGeneric::freeVoiceUnlockDLInstance()
+ {
+     return;
+ }
+
+ int AudioHardwareGeneric::GetVoiceUnlockDLLatency()
+ {
+  return NO_ERROR;
+ }
+ bool AudioHardwareGeneric::getVoiceUnlockDLInstance()
+ {
+  return 0;
+ }
+#endif
+
 AudioHardwareGeneric::AudioHardwareGeneric()
     : mOutput(0), mInput(0),  mFd(-1), mMicMute(false)
 {

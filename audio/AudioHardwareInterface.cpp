@@ -98,6 +98,110 @@ status_t AudioHardwareBase::setMode(int mode)
     return NO_ERROR;
 }
 
+#ifndef ANDROID_DEFAULT_CODE
+ status_t AudioHardwareBase::SetEMParameter(void *ptr , int len)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareBase::GetEMParameter(void *ptr , int len)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareBase::SetAudioCommand(int par1, int par2)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareBase::GetAudioCommand(int par1)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareBase::SetAudioData(int par1,size_t len,void *ptr)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareBase::GetAudioData(int par1,size_t len,void *ptr)
+ {
+     return NO_ERROR;
+ }
+
+ status_t AudioHardwareBase::SetACFPreviewParameter(void *ptr , int len)
+ {
+     return NO_ERROR;
+ }
+ status_t AudioHardwareBase::SetHCFPreviewParameter(void *ptr , int len)
+ {
+     return NO_ERROR;
+ }
+ /////////////////////////////////////////////////////////////////////////
+ //    for PCMxWay Interface API ...
+ /////////////////////////////////////////////////////////////////////////
+ int AudioHardwareBase::xWayPlay_Start(int sample_rate)
+ {
+     return NO_ERROR;
+ }
+ int AudioHardwareBase::xWayPlay_Stop(void)
+ {
+     return NO_ERROR;
+ }
+ int AudioHardwareBase::xWayPlay_Write(void *buffer, int size_bytes)
+ {
+     return NO_ERROR;
+ }
+ int AudioHardwareBase::xWayPlay_GetFreeBufferCount(void)
+ {
+     return NO_ERROR;
+ }
+int AudioHardwareBase::xWayRec_Start(int sample_rate)
+ {
+     return NO_ERROR;
+ }
+ int AudioHardwareBase::xWayRec_Stop(void)
+ {
+     return NO_ERROR;
+ }
+ int AudioHardwareBase::xWayRec_Read(void *buffer, int size_bytes)
+ {
+     return NO_ERROR;
+ }
+
+ //add by wendy
+ int AudioHardwareBase:: ReadRefFromRing(void*buf, uint32_t datasz,void* DLtime)
+ {
+    return NO_ERROR;
+ }
+ int AudioHardwareBase:: GetVoiceUnlockULTime(void* DLtime)
+ {
+    return NO_ERROR;
+ }
+ int AudioHardwareBase:: SetVoiceUnlockSRC(uint outSR, uint outChannel)
+ {
+    return NO_ERROR;
+ }
+
+ bool AudioHardwareBase:: startVoiceUnlockDL()
+ {
+    return NO_ERROR;
+ }
+
+ bool AudioHardwareBase::stopVoiceUnlockDL()
+ {
+    return NO_ERROR;
+ }
+
+ void AudioHardwareBase::freeVoiceUnlockDLInstance()
+ {
+     return;
+ }
+ int AudioHardwareBase::GetVoiceUnlockDLLatency()
+ {
+  return NO_ERROR;
+ }
+ bool AudioHardwareBase::getVoiceUnlockDLInstance()
+ {
+  return 0;
+ }
+#endif
+
 // default implementation
 status_t AudioHardwareBase::setParameters(const String8& keyValuePairs)
 {

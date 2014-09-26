@@ -6,9 +6,19 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
+ifeq ($(strip $(BOARD_USES_GENERIC_AUDIO)),true)
+  LOCAL_CFLAGS += -DGENERIC_AUDIO
+else
+  LOCAL_CFLAGS += -DMTK_AUDIO
+endif
+
 LOCAL_SRC_FILES := \
     AudioHardwareInterface.cpp \
     audio_hw_hal.cpp
+
+ifeq ($(BOARD_HAVE_BLUETOOTH),true)
+  LOCAL_CFLAGS += -DWITH_A2DP
+endif
 
 LOCAL_MODULE := libaudiohw_legacy
 LOCAL_MODULE_TAGS := optional
@@ -17,6 +27,12 @@ LOCAL_STATIC_LIBRARIES := libmedia_helper
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
+
+ifeq ($(strip $(BOARD_USES_GENERIC_AUDIO)),true)
+  LOCAL_CFLAGS += -DGENERIC_AUDIO
+else
+  LOCAL_CFLAGS += -DMTK_AUDIO
+endif
 
 LOCAL_SRC_FILES := \
     AudioPolicyManagerBase.cpp \
@@ -57,6 +73,10 @@ endif
 
 endif
 
+ifeq ($(BOARD_HAVE_BLUETOOTH),true)
+  LOCAL_CFLAGS += -DWITH_A2DP
+endif
+
 LOCAL_STATIC_LIBRARIES := libmedia_helper
 LOCAL_MODULE := libaudiopolicy_legacy
 LOCAL_MODULE_TAGS := optional
@@ -67,13 +87,20 @@ include $(BUILD_STATIC_LIBRARY)
 # policy code
 include $(CLEAR_VARS)
 
+ifeq ($(strip $(BOARD_USES_GENERIC_AUDIO)),true)
+  LOCAL_CFLAGS += -DGENERIC_AUDIO
+else
+  LOCAL_CFLAGS += -DMTK_AUDIO
+endif
+
 LOCAL_SRC_FILES := \
     AudioPolicyManagerDefault.cpp
 
 LOCAL_SHARED_LIBRARIES := \
     libcutils \
     libutils \
-    liblog
+    liblog \
+    libmedia
 
 LOCAL_STATIC_LIBRARIES := \
     libmedia_helper
@@ -84,6 +111,10 @@ LOCAL_WHOLE_STATIC_LIBRARIES := \
 LOCAL_MODULE := audio_policy.default
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
 LOCAL_MODULE_TAGS := optional
+
+ifeq ($(BOARD_HAVE_BLUETOOTH),true)
+  LOCAL_CFLAGS += -DWITH_A2DP
+endif
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -103,6 +134,7 @@ include $(BUILD_SHARED_LIBRARY)
 #
 #  LOCAL_CFLAGS += \
 #      -DWITH_BLUETOOTH \
+#      -DWITH_A2DP
 #endif
 #
 #include $(BUILD_SHARED_LIBRARY)

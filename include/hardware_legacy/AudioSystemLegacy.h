@@ -71,7 +71,17 @@ enum audio_source {
     AUDIO_SOURCE_FM_RX_A2DP = 10,
     AUDIO_SOURCE_MAX = AUDIO_SOURCE_FM_RX_A2DP,
 #else
+#ifndef ANDROID_DEFAULT_CODE
+    AUDIO_SOURCE_VOICE_UNLOCK =80,
+    AUDIO_SOURCE_CUSTOMIZATION1 =81,
+    AUDIO_SOURCE_CUSTOMIZATION2 =82,
+    AUDIO_SOURCE_CUSTOMIZATION3 =83,
+    AUDIO_SOURCE_MATV =98,
+    AUDIO_SOURCE_FM =99,
+    AUDIO_SOURCE_MAX = AUDIO_SOURCE_FM,
+#else
     AUDIO_SOURCE_MAX = AUDIO_SOURCE_VOICE_COMMUNICATION,
+#endif
 #endif
 
     AUDIO_SOURCE_LIST_END  // must be last - used to validate audio source type
@@ -95,6 +105,11 @@ public:
 #ifdef QCOM_HARDWARE
         INCALL_MUSIC     = 10,
 #endif
+#ifndef ANDROID_DEFAULT_CODE
+        FM              = 10,
+        MATV            = 11,
+        BOOT            = 12, //only used for bootanimation and output from speakerand headset
+#endif
         NUM_STREAM_TYPES
     };
 
@@ -102,6 +117,9 @@ public:
     enum pcm_sub_format {
         PCM_SUB_16_BIT          = 0x1, // must be 1 for backward compatibility
         PCM_SUB_8_BIT           = 0x2, // must be 2 for backward compatibility
+#ifndef ANDROID_DEFAULT_CODE
+        PCM_SUB_VM                = 0x4
+#endif
     };
 
     enum audio_sessions {
@@ -151,7 +169,10 @@ public:
         SUB_FORMAT_MASK     = 0x00FFFFFF,
         // Aliases
         PCM_16_BIT          = (PCM|PCM_SUB_16_BIT),
-        PCM_8_BIT          = (PCM|PCM_SUB_8_BIT)
+        PCM_8_BIT          = (PCM|PCM_SUB_8_BIT),
+#ifndef ANDROID_DEFAULT_CODE
+        VM_FMT               = (PCM|PCM_SUB_VM)
+#endif
     };
 
     enum audio_channels {
@@ -228,6 +249,7 @@ public:
         MODE_RINGTONE,
         MODE_IN_CALL,
         MODE_IN_COMMUNICATION,
+        MODE_IN_CALL_2,
         NUM_MODES  // not a valid entry, denotes end-of-list
     };
 
@@ -237,7 +259,8 @@ public:
         NS_ENABLE     = 0x0002,
         NS_DISABLE    = 0,
         TX_IIR_ENABLE = 0x0004,
-        TX_DISABLE    = 0
+        TX_DISABLE    = 0,
+        AGC_NS_IIR_ALL_ENABLE = AGC_ENABLE | NS_ENABLE | TX_IIR_ENABLE
     };
 
     // DO NOT USE: the "audio_devices" enumeration below is obsolete, use type "audio_devices_t" and
@@ -268,6 +291,9 @@ public:
         DEVICE_OUT_DEFAULT = DEVICE_OUT_SPEAKER,
 #else
         DEVICE_OUT_DEFAULT = 0x8000,
+#ifndef ANDROID_DEFAULT_CODE
+        DEVICE_OUT_FM_TX = 0x10000,
+#endif
 #endif
         DEVICE_OUT_ALL = (DEVICE_OUT_EARPIECE | DEVICE_OUT_SPEAKER | DEVICE_OUT_WIRED_HEADSET |
                 DEVICE_OUT_WIRED_HEADPHONE | DEVICE_OUT_BLUETOOTH_SCO | DEVICE_OUT_BLUETOOTH_SCO_HEADSET |
@@ -278,10 +304,14 @@ public:
                 DEVICE_OUT_USB_ACCESSORY | DEVICE_OUT_USB_DEVICE |
                 DEVICE_OUT_ANC_HEADSET | DEVICE_OUT_ANC_HEADPHONE |
                 DEVICE_OUT_FM | DEVICE_OUT_FM_TX |
-                DEVICE_OUT_PROXY | DEVICE_OUT_DEFAULT),
+                DEVICE_OUT_PROXY |
 #else
-                DEVICE_OUT_DEFAULT),
+                DEVICE_IN_VOICE_CALL | DEVICE_IN_BACK_MIC |
+#ifndef ANDROID_DEFAULT_CODE
+                DEVICE_OUT_FM_TX |
 #endif
+#endif
+                DEVICE_OUT_DEFAULT),
         DEVICE_OUT_ALL_A2DP = (DEVICE_OUT_BLUETOOTH_A2DP | DEVICE_OUT_BLUETOOTH_A2DP_HEADPHONES |
                 DEVICE_OUT_BLUETOOTH_A2DP_SPEAKER),
 #ifdef QCOM_HARDWARE
@@ -314,6 +344,10 @@ public:
         DEVICE_IN_VOICE_CALL = 0x400000,
         DEVICE_IN_BACK_MIC = 0x800000,
         DEVICE_IN_DEFAULT = 0x80000000,
+#ifndef ANDROID_DEFAULT_CODE
+        DEVICE_IN_FM = 0x1000000,
+        DEVICE_IN_AUX_DIGITAL2 = 0x2000000,
+#endif
 #endif
 
         DEVICE_IN_ALL = (DEVICE_IN_COMMUNICATION | DEVICE_IN_AMBIENT | DEVICE_IN_BUILTIN_MIC |
@@ -321,10 +355,13 @@ public:
 #ifdef QCOM_HARDWARE
                 DEVICE_IN_VOICE_CALL | DEVICE_IN_BACK_MIC | DEVICE_IN_ANC_HEADSET |
                 DEVICE_IN_FM_RX | DEVICE_IN_FM_RX_A2DP | DEVICE_IN_DEFAULT |
-                DEVICE_IN_ANLG_DOCK_HEADSET | DEVICE_IN_PROXY)
+                DEVICE_IN_ANLG_DOCK_HEADSET | DEVICE_IN_PROXY |
 #else
-                DEVICE_IN_VOICE_CALL | DEVICE_IN_BACK_MIC | DEVICE_IN_DEFAULT)
+                DEVICE_IN_VOICE_CALL | DEVICE_IN_BACK_MIC |
+#ifndef ANDROID_DEFAULT_CODE
+                DEVICE_IN_FM | DEVICE_IN_AUX_DIGITAL2 |
 #endif
+                DEVICE_IN_DEFAULT)
     };
 
     // request to open a direct output with getOutput() (by opposition to sharing an output with other AudioTracks)
@@ -347,6 +384,9 @@ public:
         FORCE_DIGITAL_DOCK,
         FORCE_NO_BT_A2DP,
         FORCE_SYSTEM_ENFORCED,
+#ifndef ANDROID_DEFAULT_CODE
+        FORCE_NO_SYSTEM_ENFORCED,
+#endif
         NUM_FORCE_CONFIG,
         FORCE_DEFAULT = FORCE_NONE
     };
@@ -358,6 +398,9 @@ public:
         FOR_RECORD,
         FOR_DOCK,
         FOR_SYSTEM,
+#ifndef ANDROID_DEFAULT_CODE
+        FOR_PROPRIETARY,
+#endif
         NUM_FORCE_USE
     };
 

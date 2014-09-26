@@ -4238,4 +4238,12 @@ void AudioPolicyManagerBase::defaultAudioPolicyConfig(void)
     mHwModules.add(module);
 }
 
+#ifdef MTK_AUDIO
+status_t AudioPolicyManagerBase::SetPolicyManagerParameters(int par1,int par2 ,int par3,int par4)
+{
+    return NO_ERROR;
+}
+#endif
+
+
 }; // namespace android

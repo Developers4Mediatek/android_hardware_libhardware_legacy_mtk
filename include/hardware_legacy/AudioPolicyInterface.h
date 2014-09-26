@@ -166,6 +166,10 @@ public:
     //dump state
     virtual status_t    dump(int fd) = 0;
 
+#ifdef MTK_AUDIO
+    virtual status_t  SetPolicyManagerParameters(int par1, int par2 , int par3 , int par4) =0;
+#endif
+
     virtual bool isOffloadSupported(const audio_offload_info_t& offloadInfo) = 0;
 };
 
