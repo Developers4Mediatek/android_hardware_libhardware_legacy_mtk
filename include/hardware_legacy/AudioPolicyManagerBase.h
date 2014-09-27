@@ -465,12 +465,14 @@ protected:
         // true if current platform requires a specific output to be opened for this particular
         // set of parameters. This function is called by getOutput() and is implemented by platform
         // specific audio policy manager.
+        /*
         virtual bool needsDirectOuput(audio_stream_type_t stream,
                                       uint32_t samplingRate,
                                       audio_format_t format,
                                       audio_channel_mask_t channelMask,
                                       audio_output_flags_t flags,
                                       audio_devices_t device);
+        */
 
         virtual uint32_t getMaxEffectsCpuLoad();
         virtual uint32_t getMaxEffectsMemory();
@@ -603,7 +605,6 @@ private:
         // updates device caching and output for streams that can influence the
         //    routing of notifications
         void handleNotificationRoutingForStream(AudioSystem::stream_type stream);
-        static bool isVirtualInputDevice(audio_devices_t device);
 };
 
 };

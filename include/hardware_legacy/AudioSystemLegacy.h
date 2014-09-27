@@ -306,7 +306,6 @@ public:
                 DEVICE_OUT_FM | DEVICE_OUT_FM_TX |
                 DEVICE_OUT_PROXY |
 #else
-                DEVICE_IN_VOICE_CALL | DEVICE_IN_BACK_MIC |
 #ifndef ANDROID_DEFAULT_CODE
                 DEVICE_OUT_FM_TX |
 #endif
@@ -360,6 +359,7 @@ public:
                 DEVICE_IN_VOICE_CALL | DEVICE_IN_BACK_MIC |
 #ifndef ANDROID_DEFAULT_CODE
                 DEVICE_IN_FM | DEVICE_IN_AUX_DIGITAL2 |
+#endif
 #endif
                 DEVICE_IN_DEFAULT)
     };
