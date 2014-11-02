@@ -64,6 +64,19 @@ status_t AudioHardwareGeneric::initCheck()
     return NO_INIT;
 }
 
+    // for open output stream with flag
+AudioStreamOut* AudioHardwareGeneric::openOutputStreamWithFlag(
+                                uint32_t devices,
+                                int *format,
+                                uint32_t *channels,
+                                uint32_t *sampleRate,
+                                status_t *status,
+                                uint32_t output_flag )
+{
+    return openOutputStream(devices,format,channels,sampleRate,status);
+}
+
+
 AudioStreamOut* AudioHardwareGeneric::openOutputStream(
         uint32_t devices, int *format, uint32_t *channels, uint32_t *sampleRate, status_t *status)
 {

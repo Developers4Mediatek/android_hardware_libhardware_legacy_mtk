@@ -42,6 +42,19 @@ status_t AudioHardwareStub::initCheck()
     return NO_ERROR;
 }
 
+    // for open output stream with flag
+AudioStreamOut* AudioHardwareStub::openOutputStreamWithFlag(
+                                uint32_t devices,
+                                int *format,
+                                uint32_t *channels,
+                                uint32_t *sampleRate,
+                                status_t *status,
+                                uint32_t output_flag )
+{
+    return openOutputStream(devices,format,channels,sampleRate,status);
+}
+
+
 AudioStreamOut* AudioHardwareStub::openOutputStream(
         uint32_t devices, int *format, uint32_t *channels, uint32_t *sampleRate, status_t *status)
 {

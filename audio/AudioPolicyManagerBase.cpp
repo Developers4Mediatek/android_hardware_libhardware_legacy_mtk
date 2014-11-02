@@ -3062,6 +3062,28 @@ const AudioPolicyManagerBase::VolumeCurvePoint
         sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
     },
 #endif
+#ifdef MTK_AUDIO
+    { // AUDIO_STREAM_FM
+        sDefaultMediaVolumeCurve, // DEVICE_CATEGORY_HEADSET
+        sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
+        sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
+    },
+    { // AUDIO_STREAM_ATV
+        sDefaultMediaVolumeCurve, // DEVICE_CATEGORY_HEADSET
+        sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
+        sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
+    },
+    { // AUDIO_STREAM_BOOT
+        sDefaultMediaVolumeCurve, // DEVICE_CATEGORY_HEADSET
+        sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
+        sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
+    },
+    { // AUDIO_STREAM_VIBSPK
+        sDefaultMediaVolumeCurve, // DEVICE_CATEGORY_HEADSET
+        sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
+        sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
+    },
+#endif
 };
 
 void AudioPolicyManagerBase::initializeVolumeCurves()
@@ -4248,5 +4270,12 @@ void AudioPolicyManagerBase::defaultAudioPolicyConfig(void)
 
     mHwModules.add(module);
 }
+
+#ifdef MTK_AUDIO
+status_t AudioPolicyManagerBase::SetPolicyManagerParameters(int par1,int par2 ,int par3,int par4)
+{
+    return NO_ERROR;
+}
+#endif
 
 }; // namespace android

@@ -348,6 +348,13 @@ status_t A2dpAudioInterface::A2dpAudioStreamOut::init()
     return 0;
 }
 
+status_t A2dpAudioInterface::A2dpAudioStreamOut::setMuteModeNormal(int Mutecount)
+{
+    WriteMuteCounter = Mutecount;
+    return NO_ERROR;
+}
+
+
 status_t A2dpAudioInterface::A2dpAudioStreamOut::standby()
 {
     Mutex::Autolock lock(mLock);

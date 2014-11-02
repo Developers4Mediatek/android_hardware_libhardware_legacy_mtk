@@ -258,6 +258,31 @@ static int out_get_next_write_timestamp(const struct audio_stream_out *stream,
 }
 #endif
 
+static int out_set_callback(struct audio_stream_out *stream,
+            stream_callback_t callback, void *cookie)
+{
+    #ifdef MTK_AUDIO
+    const struct legacy_stream_out *out =
+        reinterpret_cast<const struct legacy_stream_out *>(stream);
+    return out->legacy_out->setCallBack(callback,cookie);
+    #else
+    return -EINVAL;
+    #endif
+}
+
+static int out_get_presentation_position(const struct audio_stream_out *stream,
+                           uint64_t *frames, struct timespec *timestamp)
+{
+    #ifdef MTK_AUDIO
+    const struct legacy_stream_out *out =
+        reinterpret_cast<const struct legacy_stream_out *>(stream);
+    return out->legacy_out->getPresentationPosition(frames,timestamp);
+    #else
+    return -EINVAL;
+    #endif
+}
+
+
 static int out_add_audio_effect(const struct audio_stream *stream, effect_handle_t effect)
 {
     return 0;
@@ -558,6 +583,9 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
     out->stream.get_next_write_timestamp = out_get_next_write_timestamp;
 #endif
 
+    out->stream.set_callback = out_set_callback;
+    out->stream.get_presentation_position = out_get_presentation_position;
+
     *stream_out = &out->stream;
     return 0;
 
@@ -639,6 +667,143 @@ err_open:
     *stream_in = NULL;
     return ret;
 }
+// not ANDROID_DEFAULT_CODE
+//-----------------------------------------------------------------
+static int adev_set_emparameter(struct audio_hw_device *dev,void *ptr , int len)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->SetEMParameter(ptr,len);
+}
+
+static int adev_get_emparameter(struct audio_hw_device *dev,void *ptr , int len)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->GetEMParameter(ptr,len);
+}
+
+static int adev_set_audiocommand(struct audio_hw_device *dev,int par1 , int par2)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->SetAudioCommand(par1,par2);
+}
+
+static int adev_get_audiocommand(struct audio_hw_device *dev,int par1)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->GetAudioCommand(par1);
+}
+
+static int adev_set_audiodata(struct audio_hw_device *dev,int par1,size_t len,void *ptr)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->SetAudioData(par1,len,ptr);
+}
+
+static int adev_get_audiodata(struct audio_hw_device *dev,int par1,size_t len,void *ptr)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->GetAudioData(par1,len,ptr);
+}
+
+static int adev_set_acf_previewparameter(struct audio_hw_device *dev,void *ptr , int len)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->SetACFPreviewParameter(ptr,len);
+}
+
+static int adev_set_hcf_previewparameter(struct audio_hw_device *dev,void *ptr , int len)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->SetHCFPreviewParameter(ptr,len);
+}
+
+static int adev_xway_play_start(struct audio_hw_device *dev,int sample_rate)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->xWayPlay_Start(sample_rate);
+}
+
+static int adev_xway_play_stop(struct audio_hw_device *dev)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->xWayPlay_Stop();
+}
+
+static int adev_xway_play_write(struct audio_hw_device *dev,void* buffer ,int size_bytes)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->xWayPlay_Write(buffer,size_bytes);
+}
+
+static int adev_xway_getfreebuffercount(struct audio_hw_device *dev)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->xWayPlay_GetFreeBufferCount();
+}
+
+static int adev_xway_rec_start(struct audio_hw_device *dev,int smple_rate)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->xWayRec_Start(smple_rate);
+}
+
+static int adev_xway_rec_stop(struct audio_hw_device *dev)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->xWayRec_Stop();
+}
+
+static int adev_xway_rec_read(struct audio_hw_device *dev,void* buffer , int size_bytes)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->xWayRec_Read(buffer,size_bytes);
+}
+
+//add by wendy
+static int adev_ReadRefFromRing(struct audio_hw_device *dev,void*buf, uint32_t datasz,void* DLtime)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->ReadRefFromRing(buf, datasz, DLtime);
+}
+static int adev_GetVoiceUnlockULTime(struct audio_hw_device *dev,void* DLtime)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->GetVoiceUnlockULTime( DLtime);
+}
+static int adev_SetVoiceUnlockSRC(struct audio_hw_device *dev,uint outSR, uint outChannel)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->SetVoiceUnlockSRC(outSR,outChannel);
+}
+static bool adev_startVoiceUnlockDL(struct audio_hw_device *dev)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->startVoiceUnlockDL();
+}
+static bool adev_stopVoiceUnlockDL(struct audio_hw_device *dev)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->stopVoiceUnlockDL();
+}
+
+static void adev_freeVoiceUnlockDLInstance(struct audio_hw_device *dev)
+{
+    struct legacy_audio_device *ladev = to_ladev(dev);
+    return ladev->hwif->freeVoiceUnlockDLInstance();
+}
+static int adev_GetVoiceUnlockDLLatency(struct audio_hw_device *dev)
+{
+ struct legacy_audio_device *ladev = to_ladev(dev);
+ return ladev->hwif->GetVoiceUnlockDLLatency();
+
+}
+static bool adev_getVoiceUnlockDLInstance(struct audio_hw_device *dev)
+{
+struct legacy_audio_device *ladev = to_ladev(dev);
+return ladev->hwif->getVoiceUnlockDLInstance();
+}
+
+//-------------------------------------------------------------------------
 
 static void adev_close_input_stream(struct audio_hw_device *dev,
                                struct audio_stream_in *stream)
@@ -710,6 +875,33 @@ static int legacy_adev_open(const hw_module_t* module, const char* name,
     ladev->device.close_output_stream = adev_close_output_stream;
     ladev->device.close_input_stream = adev_close_input_stream;
     ladev->device.dump = adev_dump;
+
+// not ANDROID_DEFAULT_CODE
+    ladev->device.SetEMParameter = adev_set_emparameter;
+    ladev->device.GetEMParameter = adev_get_emparameter;
+    ladev->device.SetAudioCommand = adev_set_audiocommand;
+    ladev->device.GetAudioCommand = adev_get_audiocommand;
+    ladev->device.SetAudioData = adev_set_audiodata;
+    ladev->device.GetAudioData = adev_get_audiodata;
+    ladev->device.SetACFPreviewParameter = adev_set_acf_previewparameter;
+    ladev->device.SetHCFPreviewParameter = adev_set_hcf_previewparameter;
+    ladev->device.xWayPlay_Start = adev_xway_play_start;
+    ladev->device.xWayPlay_Stop = adev_xway_play_stop;
+    ladev->device.xWayPlay_Write = adev_xway_play_write;
+    ladev->device.xWayPlay_GetFreeBufferCount = adev_xway_getfreebuffercount;
+    ladev->device.xWayRec_Start = adev_xway_rec_start;
+    ladev->device.xWayRec_Stop = adev_xway_rec_stop;
+    ladev->device.xWayRec_Read = adev_xway_rec_read;
+    //added by wendy
+    ladev->device.ReadRefFromRing = adev_ReadRefFromRing;
+    ladev->device.GetVoiceUnlockULTime = adev_GetVoiceUnlockULTime;
+    ladev->device.SetVoiceUnlockSRC = adev_SetVoiceUnlockSRC;
+    ladev->device.startVoiceUnlockDL = adev_startVoiceUnlockDL;
+    ladev->device.stopVoiceUnlockDL = adev_stopVoiceUnlockDL;
+    ladev->device.freeVoiceUnlockDLInstance = adev_freeVoiceUnlockDLInstance;
+    ladev->device.GetVoiceUnlockDLLatency = adev_GetVoiceUnlockDLLatency;
+    ladev->device.getVoiceUnlockDLInstance = adev_getVoiceUnlockDLInstance;
+// not ANDROID_DEFAULT_CODE
 
     ladev->hwif = createAudioHardware();
     if (!ladev->hwif) {

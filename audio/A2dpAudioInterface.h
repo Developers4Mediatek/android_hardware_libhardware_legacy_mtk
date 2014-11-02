@@ -49,6 +49,9 @@ public:
     virtual status_t    setParameters(const String8& keyValuePairs);
     virtual String8     getParameters(const String8& keys);
 
+    // item needs to do when mode change
+    virtual void A2dpAudiosetMode(int mode);
+
     virtual size_t      getInputBufferSize(uint32_t sampleRate, int format, int channelCount);
 
     // create I/O streams
@@ -68,7 +71,7 @@ public:
                                 status_t *status,
                                 AudioSystem::audio_in_acoustics acoustics);
     virtual    void        closeInputStream(AudioStreamIn* in);
-//    static AudioHardwareInterface* createA2dpInterface();
+    static AudioHardwareInterface* createA2dpInterface();
 
 protected:
     virtual status_t    dump(int fd, const Vector<String16>& args);
@@ -89,6 +92,7 @@ private:
         virtual int         format() const { return AudioSystem::PCM_16_BIT; }
         virtual uint32_t    latency() const { return ((1000*bufferSize())/frameSize())/sampleRate() + 200; }
         virtual status_t    setVolume(float left, float right) { return INVALID_OPERATION; }
+        virtual status_t    setMuteModeNormal(int Mutecount);
         virtual ssize_t     write(const void* buffer, size_t bytes);
                 status_t    standby();
         virtual status_t    dump(int fd, const Vector<String16>& args);
@@ -120,6 +124,12 @@ private:
                 bool        mSuspended;
                 nsecs_t     mLastWriteTime;
                 uint32_t    mBufferDurationUs;
+        // add by chipeng
+        uint32_t WriteMuteCounter;
+        bool        mIncallSuspened;
+#ifdef DUMP_A2DPSTREAMOUT
+        FILE  *pA2dpinputFile;
+#endif
     };
 
     friend class A2dpAudioStreamOut;
@@ -129,10 +139,14 @@ private:
     char        mA2dpAddress[20];
     bool        mBluetoothEnabled;
     bool        mSuspended;
+    // add by chipeng
+    bool        mIncallSuspened;
 };
 
 
 // ----------------------------------------------------------------------------
+
+extern "C" AudioHardwareInterface* createA2DPAudioHardware(void);
 
 }; // namespace android
 
